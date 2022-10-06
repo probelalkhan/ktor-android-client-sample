@@ -1,9 +1,8 @@
 package net.simplifiedcoding.tmdbmovies.ui.movies
 
-import androidx.compose.foundation.Image
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,14 +16,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import net.simplifiedcoding.tmdbmovies.R
 import net.simplifiedcoding.tmdbmovies.data.models.Movie
+import net.simplifiedcoding.tmdbmovies.ui.theme.AppTheme
 import net.simplifiedcoding.tmdbmovies.ui.theme.spacing
 
 
@@ -106,12 +108,13 @@ fun MovieItem(movie: Movie) {
     }
 }
 
-/*
+val movie = Json.decodeFromString<Movie>("{\"adult\":false,\"backdrop_path\":\"\\/y2Ca1neKke2mGPMaHzlCNDVZqsK.jpg\",\"genre_ids\":[28,35,53],\"id\":718930,\"original_language\":\"en\",\"original_title\":\"Bullet Train\",\"overview\":\"Unlucky assassin Ladybug is determined to do his job peacefully after one too many gigs gone off the rails. Fate, however, may have other plans, as Ladybug's latest mission puts him on a collision course with lethal adversaries from around the globe\\u2014all with connected, yet conflicting, objectives\\u2014on the world's fastest train.\",\"popularity\":5159.444,\"poster_path\":\"\\/tVxDe01Zy3kZqaZRNiXFGDICdZk.jpg\",\"release_date\":\"2022-07-03\",\"title\":\"Bullet Train\",\"video\":false,\"vote_average\":7.5,\"vote_count\":1407}")
+
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun MovieItemPreviewDark() {
     AppTheme {
-        MovieItem(item)
+        MovieItem(movie)
     }
 }
 
@@ -119,6 +122,6 @@ fun MovieItemPreviewDark() {
 @Composable
 fun MovieItemPreviewLight() {
     AppTheme {
-        MovieItem(item)
+        MovieItem(movie)
     }
-}*/
+}
