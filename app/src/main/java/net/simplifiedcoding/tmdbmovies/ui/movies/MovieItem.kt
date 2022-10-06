@@ -1,9 +1,9 @@
 package net.simplifiedcoding.tmdbmovies.ui.movies
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,18 +14,22 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import net.simplifiedcoding.tmdbmovies.R
-import net.simplifiedcoding.tmdbmovies.ui.theme.AppTheme
+import net.simplifiedcoding.tmdbmovies.data.models.Movie
 import net.simplifiedcoding.tmdbmovies.ui.theme.spacing
 
 
 @Composable
-fun MovieItem() {
+fun MovieItem(movie: Movie) {
     val spacing = MaterialTheme.spacing
     Box(
         modifier = Modifier
@@ -49,37 +53,42 @@ fun MovieItem() {
                 .fillMaxWidth()
         ) {
 
-            Image(
-                painter = painterResource(id = R.drawable.bg_jurassic_world),
-                contentDescription = "Jurassic World",
-                modifier = Modifier.weight(0.3f)
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(movie.fullPosterPath)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(R.drawable.bg_image_placeholder),
+                contentDescription = movie.title,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.weight(0.4f)
             )
 
             Column(
                 modifier = Modifier
-                    .weight(0.7f)
+                    .weight(0.6f)
                     .padding(start = spacing.medium)
             ) {
                 Text(
-                    text = "Jurassic World Dominion",
+                    text = movie.originalTitle,
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                Spacer(modifier = Modifier.size(spacing.small))
+                Spacer(modifier = Modifier.size(spacing.medium))
 
                 Text(
-                    text = "Four years after Isla Nublar was destroyed, dinosaurs now live—and hunt—alongside humans all over the world. This fragile balance will reshape the future and determine, once and for all, whether human beings are to remain the apex predators on a planet they now share with history’s most fearsome creatures.",
+                    text = movie.overview,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 3,
+                    maxLines = 7,
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Spacer(modifier = Modifier.size(10.dp))
+                Spacer(modifier = Modifier.size(spacing.medium))
 
                 Text(
-                    text = "IMDB 8.9",
+                    text = "IMDB ${movie.voteAverage}",
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -97,11 +106,12 @@ fun MovieItem() {
     }
 }
 
+/*
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun MovieItemPreviewDark() {
     AppTheme {
-        MovieItem()
+        MovieItem(item)
     }
 }
 
@@ -109,6 +119,6 @@ fun MovieItemPreviewDark() {
 @Composable
 fun MovieItemPreviewLight() {
     AppTheme {
-        MovieItem()
+        MovieItem(item)
     }
-}
+}*/

@@ -3,27 +3,41 @@ package net.simplifiedcoding.tmdbmovies.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import net.simplifiedcoding.tmdbmovies.ui.movies.MovieItem
+import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
+import dagger.hilt.android.AndroidEntryPoint
+import net.simplifiedcoding.tmdbmovies.data.network.Resource
+import net.simplifiedcoding.tmdbmovies.ui.common.FullScreenProgressbar
+import net.simplifiedcoding.tmdbmovies.ui.common.toast
 import net.simplifiedcoding.tmdbmovies.ui.movies.MovieList
 import net.simplifiedcoding.tmdbmovies.ui.theme.AppTheme
-import net.simplifiedcoding.tmdbmovies.ui.theme.spacing
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val viewModel by viewModels<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val context = LocalContext.current
+            val movies = viewModel.movies.collectAsState()
+
             AppTheme {
-                MovieList()
+                movies.value?.let {
+                    when (it) {
+                        is Resource.Failure -> {
+                            context.toast(it.exception.message!!)
+                        }
+                        Resource.Loading -> {
+                            FullScreenProgressbar()
+                        }
+                        is Resource.Success -> {
+                            MovieList(it.result)
+                        }
+                    }
+                }
             }
         }
     }
